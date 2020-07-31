@@ -26,11 +26,8 @@ jobs:
           go-version: ${{ matrix.go_version }} 
       - name: Go tests
         run: |
-          echo "GOPATH=$GOPATH"
-          echo "github.repository=${{ github.repository }}"
+          echo "getting dependencies...".
           go get -v -u ./...
           cd ./src/github.com/${{ github.repository }}
-          echo "current dir `pwd`"
-          ls -la
-          echo "go test for ${{ matrix.os }} and version ${{ matrix.go_version }} "
+          echo "go test for ${{ matrix.os }} and version ${{ matrix.go_version }}".
           go test -v ./...
