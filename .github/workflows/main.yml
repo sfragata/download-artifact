@@ -28,5 +28,6 @@ jobs:
         run: |
           go get -v -u ./...
           echo "current dir `pwd`"
+          ls -la
           echo "go test for ${{ matrix.os }} and version ${{ matrix.go_version }}"
           go test -v ./...
