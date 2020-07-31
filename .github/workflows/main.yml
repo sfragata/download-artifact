@@ -1,0 +1,25 @@
+name: Golang CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        go_version: [1.13 1.14]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go ${{ matrix.go_version }}
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go_version }} 
+      - name: Go tests
+        run: |
+          echo "go test for ${{ matrix.os }} and version ${{ matrix.go_version }} 
+          go test -v ./...
