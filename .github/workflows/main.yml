@@ -26,5 +26,7 @@ jobs:
           go-version: ${{ matrix.go_version }} 
       - name: Go tests
         run: |
+          go get -v -u ./...
+          echo "current dir `pwd`"
           echo "go test for ${{ matrix.os }} and version ${{ matrix.go_version }}"
           go test -v ./...
