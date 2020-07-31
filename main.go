@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/download-artifact/nexus"
-	"github.com/download-artifact/utils"
+	"github.com/sfragata/download-artifact/nexus"
+	"github.com/sfragata/download-artifact/utils"
 )
 
 func main() {

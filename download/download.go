@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/download-artifact/utils"
 	"github.com/dustin/go-humanize"
+	"github.com/sfragata/download-artifact/utils"
 )
 
 // Options options do be passed to GetFile

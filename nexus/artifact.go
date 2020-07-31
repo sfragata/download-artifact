@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/download-artifact/utils"
+	"github.com/sfragata/download-artifact/utils"
 )
 
 const nexusSearchPath = "/nexus/service/local/lucene/search?repositoryId=%s&g=%s&a=%s&p=%s&v=%s&c=%s"

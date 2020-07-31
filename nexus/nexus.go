@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/download-artifact/download"
+	"github.com/sfragata/download-artifact/download"
 )
 
 //ArtifactInfo Struct to Maven
