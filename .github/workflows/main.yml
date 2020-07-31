@@ -8,13 +8,18 @@ on:
 
 jobs:
   build:
+    env:
+      GOPATH: ${{ github.workspace }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         go_version: [1.13.x, 1.14.x]
     steps:
-      - uses: actions/checkout@v2
+      - name: checkout  
+        uses: actions/checkout@v2
+        with:
+          path: ./src/github.com/${{ github.repository }}
       - name: Set up Go ${{ matrix.go_version }}
         uses: actions/setup-go@v1
         with:
