@@ -39,7 +39,7 @@ func main() {
 		Packaging:       *packaging,
 		Classifier:      *classifier,
 		ApplicationName: *applicationName,
-		RepositoryType:  *&repositoryType,
+		RepositoryType:  repositoryType,
 		TargetFolder:    *targetFolder,
 	}
 	err := nexus.Download(artifactInfo, *nexusHost)

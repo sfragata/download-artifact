@@ -46,7 +46,11 @@ func FindArtifact(artifactInfo ArtifactInfo, nexusHost string) (string, error) {
 
 	var result map[string]interface{}
 
-	json.NewDecoder(resp.Body).Decode(&result)
+	err = json.NewDecoder(resp.Body).Decode(&result)
+
+	if err != nil {
+		return "", err
+	}
 
 	datas := result["data"].([]interface{})
 
