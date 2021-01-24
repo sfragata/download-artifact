@@ -13,6 +13,7 @@ builds:
       - linux
       - windows
       - darwin
+    ldflags: -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
 archives:
   - replacements:
       darwin: Darwin
@@ -30,3 +31,23 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+brews:
+  -
+    # Name template of the recipe
+    # Default to project name
+    name: download-artifact
+
+    tap:
+      owner: sfragata
+      name: homebrew-tap
+
+    # Your app's homepage.
+    # Default is empty.
+    homepage: 'https://github.com/sfragata/download-artifact/'
+
+    # Your app's description.
+    # Default is empty.
+    description: 'Utility to download artifacts hosted on Nexus using Lucene and nexus rest api'
+    commit_author:
+      name: sfragata
+      email: sfragata@gmail.com
