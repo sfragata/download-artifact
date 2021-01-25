@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestNexu2Success(t *testing.T) {
+func TestNexus2Success(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "{\"totalCount\":60,\"from\":-1,\"count\":-1,\"tooManyResults\":false,\"collapsed\":false,\"repoDetails\":[{\"repositoryId\":\"releases\",\"repositoryName\":\"Releases\",\"repositoryContentClass\":\"maven2\",\"repositoryKind\":\"hosted\",\"repositoryPolicy\":\"RELEASE\",\"repositoryURL\":\"https://nexus/nexus/service/local/repositories/releases\"}],\"data\":[{\"groupId\":\"com.group.id\",\"artifactId\":\"app-server\",\"version\":\"1.0.0\",\"latestRelease\":\"1.0.0\",\"latestReleaseRepositoryId\":\"releases\",\"artifactHits\":[{\"repositoryId\":\"releases\",\"artifactLinks\":[{\"extension\":\"pom\"},{\"classifier\":\"el5-x86_64\",\"extension\":\"rpm\"},{\"classifier\":\"el7-x86_64\",\"extension\":\"rpm\"}]}]}]}")
 	}))
