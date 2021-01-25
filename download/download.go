@@ -66,7 +66,7 @@ func GetFile(options Options) error {
 			return err
 		}
 		filename = params["filename"]
-	} else {
+	} else if !utils.IsEmpty(options.FileExtension) {
 		filename += "." + options.FileExtension
 	}
 

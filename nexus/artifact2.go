@@ -12,9 +12,9 @@ import (
 	"github.com/sfragata/download-artifact/utils"
 )
 
-const nexusSearchPath = "/nexus/service/local/lucene/search?repositoryId=%s&g=%s&a=%s&p=%s&v=%s&c=%s"
+const nexus2SearchPath = "/nexus/service/local/lucene/search?repositoryId=%s&g=%s&a=%s&p=%s&v=%s&c=%s"
 
-type artifactResponse struct {
+type artifactNexus2Response struct {
 	TotalCount       uint               `json:"totalCount"`
 	Data             []data             `json:"data"`
 	RepositoryDetail []repositoryDetail `json:"repoDetails"`
@@ -30,8 +30,8 @@ type repositoryDetail struct {
 }
 
 // FindArtifact maven artifact and return its version
-func FindArtifact(artifactInfo *ArtifactInfo, nexusHost string) (string, error) {
-	baseSearchURL := nexusHost + nexusSearchPath
+func (n Nexus2) findArtifact(artifactInfo *ArtifactInfo, nexusHost string) (string, error) {
+	baseSearchURL := nexusHost + nexus2SearchPath
 
 	searchString := fmt.Sprintf(baseSearchURL, artifactInfo.RepositoryID, artifactInfo.GroupID, artifactInfo.ArtifactID, artifactInfo.Packaging, artifactInfo.Version, artifactInfo.Classifier)
 
@@ -75,7 +75,7 @@ func FindArtifact(artifactInfo *ArtifactInfo, nexusHost string) (string, error) 
 		log.Printf("response: %s\n", body)
 	}
 
-	artifactResponse := artifactResponse{}
+	artifactResponse := artifactNexus2Response{}
 	err = json.Unmarshal(body, &artifactResponse)
 	if err != nil {
 		return "", fmt.Errorf("Invalid JSON: %v", err)
