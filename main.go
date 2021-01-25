@@ -60,7 +60,10 @@ func main() {
 	flaggy.String(&repositoryID, "r", "repository", "Nexus repository id")
 
 	var verbose bool
-	flaggy.Bool(&verbose, "V", "verbose", "verbose")
+	flaggy.Bool(&verbose, "V", "verbose", "Verbose mode")
+
+	var nexusVersion = 3
+	flaggy.Int(&nexusVersion, "nv", "nexus-version", "Nexus version")
 
 	flaggy.Parse()
 
@@ -78,8 +81,10 @@ func main() {
 		RepositoryID:    repositoryID,
 		TargetFolder:    targetFolder,
 		Verbose:         verbose,
+		NexusVersion:    nexusVersion,
 	}
-	err := nexus.Download(artifactInfo, nexusHost)
+
+	err := nexus.DownloadArtifact(artifactInfo, nexusHost)
 
 	if err != nil {
 		log.Fatalf("Error: %s\n", err)

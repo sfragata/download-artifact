@@ -1,0 +1,10 @@
+#Nexus3
+
+http://localhost:8081/service/rest/v1/search/assets?repository=&group=stax&name=stax-api&maven.extension=jar&version=&maven.classifier=
+
+###
+#Nexus2
+
+http://localhost:9090/nexus/service/local/lucene/search?r=&g=stax&a=stax-api&p=jar&v=&c=
+
+Content-Type: application/json

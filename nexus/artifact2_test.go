@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestSuccess(t *testing.T) {
+func TestNexu2Success(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "{\"totalCount\":60,\"from\":-1,\"count\":-1,\"tooManyResults\":false,\"collapsed\":false,\"repoDetails\":[{\"repositoryId\":\"releases\",\"repositoryName\":\"Releases\",\"repositoryContentClass\":\"maven2\",\"repositoryKind\":\"hosted\",\"repositoryPolicy\":\"RELEASE\",\"repositoryURL\":\"https://nexus/nexus/service/local/repositories/releases\"}],\"data\":[{\"groupId\":\"com.group.id\",\"artifactId\":\"app-server\",\"version\":\"1.0.0\",\"latestRelease\":\"1.0.0\",\"latestReleaseRepositoryId\":\"releases\",\"artifactHits\":[{\"repositoryId\":\"releases\",\"artifactLinks\":[{\"extension\":\"pom\"},{\"classifier\":\"el5-x86_64\",\"extension\":\"rpm\"},{\"classifier\":\"el7-x86_64\",\"extension\":\"rpm\"}]}]}]}")
 	}))
@@ -20,8 +20,8 @@ func TestSuccess(t *testing.T) {
 		Packaging:  "rpm",
 		Verbose:    true,
 	}
-
-	result, err := FindArtifact(&artifact, ts.URL)
+	n := Nexus2{}
+	result, err := n.findArtifact(&artifact, ts.URL)
 
 	if err != nil {
 		t.Errorf("Error: %v", err)
@@ -33,7 +33,7 @@ func TestSuccess(t *testing.T) {
 	}
 }
 
-func TestInvalidURL(t *testing.T) {
+func TestNexus2InvalidURL(t *testing.T) {
 
 	artifact := ArtifactInfo{
 		ArtifactID:   "app-server",
@@ -41,8 +41,8 @@ func TestInvalidURL(t *testing.T) {
 		Packaging:    "rpm",
 		RepositoryID: "releases",
 	}
-
-	_, err := FindArtifact(&artifact, "invalid_url")
+	n := Nexus2{}
+	_, err := n.findArtifact(&artifact, "invalid_url")
 
 	if err == nil {
 		t.Error("should have an parser url error")
@@ -50,7 +50,7 @@ func TestInvalidURL(t *testing.T) {
 
 }
 
-func TestStatusError(t *testing.T) {
+func TestNexus2StatusError(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(503)
 	}))
@@ -62,8 +62,8 @@ func TestStatusError(t *testing.T) {
 		Packaging:    "rpm",
 		RepositoryID: "releases",
 	}
-
-	_, err := FindArtifact(&artifact, ts.URL)
+	n := Nexus2{}
+	_, err := n.findArtifact(&artifact, ts.URL)
 
 	if err == nil {
 		t.Error("should have a status error")
@@ -71,7 +71,7 @@ func TestStatusError(t *testing.T) {
 
 }
 
-func TestMissingJsonDataTag(t *testing.T) {
+func TestNexus2MissingJsonDataTag(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "{\"totalCount\":60,\"from\":-1,\"count\":-1,\"tooManyResults\":false,\"collapsed\":false,\"repoDetails\":[{\"repositoryId\":\"releases\",\"repositoryName\":\"Releases\",\"repositoryContentClass\":\"maven2\",\"repositoryKind\":\"hosted\",\"repositoryPolicy\":\"RELEASE\",\"repositoryURL\":\"https://nexus/nexus/service/local/repositories/releases\"}],\"data\":[]}")
 	}))
@@ -82,8 +82,8 @@ func TestMissingJsonDataTag(t *testing.T) {
 		GroupID:    "com.group.id",
 		Packaging:  "rpm",
 	}
-
-	_, err := FindArtifact(&artifact, ts.URL)
+	n := Nexus2{}
+	_, err := n.findArtifact(&artifact, ts.URL)
 
 	if err == nil {
 		t.Error("should have an error")
@@ -91,7 +91,7 @@ func TestMissingJsonDataTag(t *testing.T) {
 
 }
 
-func TestMissingJsonRepositoryID(t *testing.T) {
+func TestNexus2MissingJsonRepositoryID(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "{\"totalCount\":60,\"from\":-1,\"count\":-1,\"tooManyResults\":false,\"collapsed\":false,\"repoDetails\":[{\"repositoryName\":\"Releases\",\"repositoryContentClass\":\"maven2\",\"repositoryKind\":\"hosted\",\"repositoryPolicy\":\"RELEASE\",\"repositoryURL\":\"https://nexus/nexus/service/local/repositories/releases\"}],\"data\":[]}")
 	}))
@@ -102,8 +102,8 @@ func TestMissingJsonRepositoryID(t *testing.T) {
 		GroupID:    "com.group.id",
 		Packaging:  "rpm",
 	}
-
-	_, err := FindArtifact(&artifact, ts.URL)
+	n := Nexus2{}
+	_, err := n.findArtifact(&artifact, ts.URL)
 
 	if err == nil {
 		t.Errorf("should have an error")
@@ -114,7 +114,7 @@ func TestMissingJsonRepositoryID(t *testing.T) {
 	}
 }
 
-func TestSuccessSnapshot(t *testing.T) {
+func TestNexus2SuccessSnapshot(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "{\"totalCount\":60,\"from\":-1,\"count\":-1,\"tooManyResults\":false,\"collapsed\":false,\"repoDetails\":[{\"repositoryId\":\"snapshots\",\"repositoryName\":\"snapshots\",\"repositoryContentClass\":\"maven2\",\"repositoryKind\":\"hosted\",\"repositoryPolicy\":\"RELEASE\",\"repositoryURL\":\"https://nexus/nexus/service/local/repositories/releases\"}],\"data\":[{\"groupId\":\"com.group.id\",\"artifactId\":\"app-server\",\"version\":\"1.0.0\",\"latestSnapshot\":\"1.0.0-SNAPSHOT\",\"latestSnapshotsRepositoryId\":\"snapshots\",\"artifactHits\":[{\"repositoryId\":\"snapshots\",\"artifactLinks\":[{\"extension\":\"pom\"},{\"classifier\":\"el5-x86_64\",\"extension\":\"rpm\"},{\"classifier\":\"el7-x86_64\",\"extension\":\"rpm\"}]}]}]}")
 	}))
@@ -125,8 +125,8 @@ func TestSuccessSnapshot(t *testing.T) {
 		GroupID:    "com.group.id",
 		Packaging:  "rpm",
 	}
-
-	result, err := FindArtifact(&artifact, ts.URL)
+	n := Nexus2{}
+	result, err := n.findArtifact(&artifact, ts.URL)
 
 	if err != nil {
 		t.Errorf("Error: %v", err)
@@ -138,7 +138,7 @@ func TestSuccessSnapshot(t *testing.T) {
 	}
 }
 
-func TestMissingLatestSnapshotAndRelease(t *testing.T) {
+func TestNexus2MissingLatestSnapshotAndRelease(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "{\"totalCount\":60,\"from\":-1,\"count\":-1,\"tooManyResults\":false,\"collapsed\":false,\"repoDetails\":[{\"repositoryId\":\"snapshots\",\"repositoryName\":\"snapshots\",\"repositoryContentClass\":\"maven2\",\"repositoryKind\":\"hosted\",\"repositoryPolicy\":\"RELEASE\",\"repositoryURL\":\"https://nexus/nexus/service/local/repositories/releases\"}],\"data\":[{\"groupId\":\"com.group.id\",\"artifactId\":\"app-server\",\"version\":\"1.0.0\",\"latestSnapshotsRepositoryId\":\"snapshots\",\"artifactHits\":[{\"repositoryId\":\"snapshots\",\"artifactLinks\":[{\"extension\":\"pom\"},{\"classifier\":\"el5-x86_64\",\"extension\":\"rpm\"},{\"classifier\":\"el7-x86_64\",\"extension\":\"rpm\"}]}]}]}")
 	}))
@@ -149,8 +149,8 @@ func TestMissingLatestSnapshotAndRelease(t *testing.T) {
 		GroupID:    "com.group.id",
 		Packaging:  "rpm",
 	}
-
-	_, err := FindArtifact(&artifact, ts.URL)
+	n := Nexus2{}
+	_, err := n.findArtifact(&artifact, ts.URL)
 
 	if err == nil {
 		t.Errorf("should have an error")
@@ -161,7 +161,7 @@ func TestMissingLatestSnapshotAndRelease(t *testing.T) {
 	}
 }
 
-func TestInvalidJson(t *testing.T) {
+func TestNexus2InvalidJson(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "{\"totalCount\":60,\"")
 	}))
@@ -172,8 +172,8 @@ func TestInvalidJson(t *testing.T) {
 		GroupID:    "com.group.id",
 		Packaging:  "rpm",
 	}
-
-	_, err := FindArtifact(&artifact, ts.URL)
+	n := Nexus2{}
+	_, err := n.findArtifact(&artifact, ts.URL)
 
 	if err == nil {
 		t.Errorf("should have an error")

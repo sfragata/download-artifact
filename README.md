@@ -33,5 +33,6 @@ download-artifact - Utility to download artifacts hosted on Nexus using Lucene a
     -t --target             Target folder (default: .)
     -H --host               Base nexus url
     -r --repository         Nexus repository id
-    -V --verbose            verbose
+    -V --verbose            Verbose mode
+    -nv --nexus-version     Nexus version (default: 3)
 ```        
